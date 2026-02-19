@@ -1,93 +1,646 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Laveena Rochiramani | Financial Analyst Portfolio</title>
+
+  <!-- Plotly for interactive charts -->
   <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+
   <style>
-    body{font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial; margin:0; background:#0b0f14; color:#e9eef5;}
-    .wrap{max-width:1050px; margin:0 auto; padding:40px 20px;}
-    .card{background:#121a24; border:1px solid #1f2b3a; border-radius:16px; padding:18px; margin:16px 0;}
-    a{color:#9bd3ff; text-decoration:none}
-    .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
-    @media (max-width:900px){.grid{grid-template-columns:1fr;}}
-    .kpi{display:flex; gap:16px; flex-wrap:wrap;}
-    .pill{background:#0f1722; border:1px solid #22344a; padding:10px 12px; border-radius:999px;}
-    .muted{color:#b7c3d6}
+    :root{
+      --bg: #0b0f14;
+      --panel: #121a24;
+      --panel2:#0f1722;
+      --border:#1f2b3a;
+      --text:#e9eef5;
+      --muted:#b7c3d6;
+      --link:#9bd3ff;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    [data-theme="light"]{
+      --bg:#f6f8fb;
+      --panel:#ffffff;
+      --panel2:#f2f6fb;
+      --border:#d8e2ef;
+      --text:#0b1320;
+      --muted:#43556b;
+      --link:#0b5fff;
+      --shadow: 0 10px 30px rgba(8,20,40,.10);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height:1.45;
+    }
+    a{color:var(--link); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1120px; margin:0 auto; padding:28px 18px 80px;}
+    .nav{
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(10px);
+      background: color-mix(in srgb, var(--bg) 70%, transparent);
+      border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+      z-index: 20;
+    }
+    .nav-inner{
+      max-width:1120px;
+      margin:0 auto;
+      padding:12px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .brand{
+      display:flex; flex-direction:column;
+      gap:2px;
+    }
+    .brand b{font-size:14px; letter-spacing:.2px}
+    .brand span{font-size:12px; color:var(--muted)}
+    .navlinks{display:flex; gap:14px; flex-wrap:wrap; align-items:center; justify-content:flex-end;}
+    .btn{
+      border:1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      padding:9px 12px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      cursor:pointer;
+      font-size: 13px;
+      white-space:nowrap;
+    }
+    .btn:hover{transform: translateY(-1px)}
+    .ghost{
+      background: transparent;
+      box-shadow:none;
+    }
+
+    .hero{
+      padding:22px 0 4px;
+      display:grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    @media (max-width: 920px){ .hero{grid-template-columns:1fr;} }
+
+    .card{
+      background: var(--panel);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card h2,.card h3{margin:0 0 10px}
+    .muted{color: var(--muted)}
+    .headline{
+      font-size: 34px;
+      line-height: 1.1;
+      margin: 0 0 10px;
+      letter-spacing: -0.4px;
+    }
+    .subhead{
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0 0 14px;
+      max-width: 64ch;
+    }
+    .pillrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;}
+    .pill{
+      background: var(--panel2);
+      border:1px solid var(--border);
+      padding:8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .kpi{
+      background: var(--panel2);
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .kpi .label{font-size:12px; color:var(--muted)}
+    .kpi .value{font-size:20px; margin-top:4px; font-weight:700}
+
+    .section{margin-top:18px;}
+    .section-title{
+      display:flex; align-items:end; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .section-title h2{margin:0; font-size:18px}
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap: 16px;}
+    @media (max-width: 920px){ .grid2{grid-template-columns:1fr;} }
+
+    .controls{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    .control{
+      background: var(--panel2);
+      border:1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .control label{display:flex; justify-content:space-between; gap:12px; font-size:13px; color:var(--muted)}
+    input[type="range"]{width:100%}
+    .tiny{font-size:12px; color:var(--muted)}
+    .mono{font-family: var(--mono)}
+    .split{
+      display:grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    @media (max-width: 920px){ .split{grid-template-columns:1fr;} }
+
+    details{
+      background: var(--panel);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      box-shadow: var(--shadow);
+    }
+    details summary{
+      cursor:pointer;
+      font-weight:700;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    details summary::-webkit-details-marker{display:none}
+    .tag{font-size:11px; padding:6px 8px; border-radius:999px; background:var(--panel2); border:1px solid var(--border); color:var(--muted)}
+    .list{margin:10px 0 0; padding-left:18px; color:var(--muted)}
+    .footer{
+      margin-top:22px;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    /* Plotly background harmony */
+    .plot{
+      min-height: 320px;
+    }
   </style>
 </head>
-<body>
+
+<body data-theme="dark">
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <b>Laveena Rochiramani</b>
+        <span>Financial Analyst • Cash Flow • Working Capital • BI • Automation</span>
+      </div>
+      <div class="navlinks">
+        <a class="btn ghost" href="#dashboard">Interactive Dashboard</a>
+        <a class="btn ghost" href="#experience">Experience</a>
+        <a class="btn ghost" href="#case-studies">Case Studies</a>
+        <a class="btn ghost" href="#contact">Contact</a>
+        <button id="themeBtn" class="btn">Toggle theme</button>
+      </div>
+    </div>
+  </div>
+
   <div class="wrap">
-    <h1 style="margin:0 0 6px;">Laveena Rochiramani</h1>
-    <div class="muted">Financial Analyst • Cash Flow Forecasting • Working Capital • BI Dashboards • Automation</div>
-
-    <div class="kpi" style="margin-top:16px;">
-      <div class="pill">Liquidity gaps identified: <b>$1.2M</b></div>
-      <div class="pill">DSO reduced: <b>18%</b></div>
-      <div class="pill">Cash inflow impact: <b>$500K/month</b></div>
-      <div class="pill">Month-end close faster: <b>2 days</b></div>
-    </div>
-
-    <div class="card">
-      <h2 style="margin:0 0 8px;">Interactive Finance Samples (sanitized)</h2>
-      <div class="muted">These charts use sample data to demonstrate modeling and dashboarding approach.</div>
-    </div>
-
-    <div class="grid">
+    <!-- HERO -->
+    <div class="hero">
       <div class="card">
-        <h3 style="margin-top:0;">13-Week Cash Forecast</h3>
-        <div id="cashChart"></div>
+        <h1 class="headline">Finance decisions, backed by models and measurable impact.</h1>
+        <p class="subhead">
+          Financial Analyst focused on cash forecasting, working capital optimization, reconciliations, and automation.
+          Portfolio below demonstrates how I communicate finance insights using clean, interactive visuals with sample data.
+        </p>
+
+        <div class="pillrow">
+          <span class="pill">Cash Flow Forecasting</span>
+          <span class="pill">Working Capital / DSO</span>
+          <span class="pill">Power BI & Excel</span>
+          <span class="pill">SQL + Finance Systems</span>
+          <span class="pill">Process Automation</span>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn" href="https://www.linkedin.com/in/laveena-rochiramani-9275a91b3/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a class="btn" href="..resume/Laveena_Rochiramani_Resume.pdf" target="_blank" rel="noreferrer">Resume PDF</a>
+          <a class="btn" href="#contact">Email</a>
+        </div>
+
+        <div class="tiny" style="margin-top:10px;">
+          Note: visuals use <span class="mono">sanitized/sample</span> data to demonstrate approach (no employer-confidential info).
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0;">Impact Snapshot</h3>
+        <div class="kpis" id="kpiGrid">
+          <div class="kpi">
+            <div class="label">Liquidity gaps identified</div>
+            <div class="value">$1.2M</div>
+          </div>
+          <div class="kpi">
+            <div class="label">DSO reduction delivered</div>
+            <div class="value">18%</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Cash inflow improvement</div>
+            <div class="value">$500K/mo</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Month-end close faster</div>
+            <div class="value">2 days</div>
+          </div>
+        </div>
+        <div class="tiny" style="margin-top:10px;">
+          Highlights are summarized from my resume outcomes.
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERACTIVE DASHBOARD -->
+    <div id="dashboard" class="section">
+      <div class="section-title">
+        <h2>Interactive Dashboard</h2>
+        <div class="tiny">Adjust levers to see working-capital and cash impact (sample model)</div>
+      </div>
+
+      <div class="split">
+        <div class="card">
+          <h3 style="margin-top:0;">Working Capital Levers</h3>
+
+          <div class="controls">
+            <div class="control">
+              <label>
+                <span>DSO improvement (days)</span>
+                <span class="mono" id="dsoVal">10</span>
+              </label>
+              <input id="dso" type="range" min="0" max="25" step="1" value="10" />
+              <div class="tiny">Collection effectiveness / AR process improvements</div>
+            </div>
+
+            <div class="control">
+              <label>
+                <span>DPO extension (days)</span>
+                <span class="mono" id="dpoVal">8</span>
+              </label>
+              <input id="dpo" type="range" min="0" max="20" step="1" value="8" />
+              <div class="tiny">Negotiated payment terms / payables strategy</div>
+            </div>
+
+            <div class="control">
+              <label>
+                <span>Inventory days reduction</span>
+                <span class="mono" id="dioVal">5</span>
+              </label>
+              <input id="dio" type="range" min="0" max="20" step="1" value="5" />
+              <div class="tiny">Inventory optimization / planning cadence</div>
+            </div>
+
+            <div class="control">
+              <label>
+                <span>Monthly revenue (sample, $M)</span>
+                <span class="mono" id="revVal">6.0</span>
+              </label>
+              <input id="rev" type="range" min="2" max="12" step="0.5" value="6" />
+              <div class="tiny">Used only to estimate cash impact in the sample model</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px; background:var(--panel2);">
+            <div class="tiny">Estimated near-term cash impact (sample)</div>
+            <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:6px;">
+              <div>
+                <div class="tiny">AR cash release</div>
+                <div class="mono" style="font-size:18px; font-weight:800" id="arImpact">$0.0M</div>
+              </div>
+              <div>
+                <div class="tiny">AP cash retention</div>
+                <div class="mono" style="font-size:18px; font-weight:800" id="apImpact">$0.0M</div>
+              </div>
+              <div>
+                <div class="tiny">Inventory cash release</div>
+                <div class="mono" style="font-size:18px; font-weight:800" id="invImpact">$0.0M</div>
+              </div>
+              <div>
+                <div class="tiny">Total</div>
+                <div class="mono" style="font-size:18px; font-weight:800" id="totalImpact">$0.0M</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-top:0;">Cash Impact Over 13 Weeks</h3>
+          <div id="impactChart" class="plot"></div>
+          <div class="tiny">
+            Conceptual view of how working-capital changes can shift near-term cash availability.
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:16px;">
+        <div class="card">
+          <h3 style="margin-top:0;">13-Week Cash Forecast (sample)</h3>
+          <div id="cashChart" class="plot"></div>
+          <div class="tiny">Scenario bands: base / upside / downside</div>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0;">AR Aging Mix (sample)</h3>
+          <div id="arChart" class="plot"></div>
+          <div class="tiny">Use this to talk through collections strategy and DSO drivers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div id="experience" class="section">
+      <div class="section-title">
+        <h2>Experience Highlights</h2>
+        <div class="tiny">Condensed from resume (impact-first)</div>
+      </div>
+
+      <div class="grid2">
+        <details open>
+          <summary>
+            Cash Flow & Working Capital Optimization
+            <span class="tag">Forecasting • AR/AP • Inventory</span>
+          </summary>
+          <ul class="list">
+            <li>Identified liquidity gaps (~$1.2M) and supported cash planning via AR/AP/inventory cycle analysis.</li>
+            <li>Improved cash inflows (~$500K/month) and reduced DSO (~18%) through collections optimization and reporting.</li>
+            <li>Built/maintained cash forecasts and scenario views for leadership decision-making.</li>
+          </ul>
+        </details>
+
+        <details open>
+          <summary>
+            Close, Reconciliations & Automation
+            <span class="tag">Controls • Accuracy • Speed</span>
+          </summary>
+          <ul class="list">
+            <li>Reconciled 40+ bank accounts monthly with high accuracy and clear audit trails.</li>
+            <li>Reduced close cycle time by ~2 days by introducing OCR-style invoice automation and tighter workflows.</li>
+            <li>Delivered variance analysis and executive-ready summaries.</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+
+    <!-- CASE STUDIES (PLACEHOLDERS) -->
+    <div id="case-studies" class="section">
+      <div class="section-title">
+        <h2>Case Studies (Coming Soon)</h2>
+        <div class="tiny">These are structured placeholders so you can publish now, then fill in later</div>
+      </div>
+
+      <div class="grid2">
+        <details>
+          <summary>
+            13-Week Cash Forecasting Playbook
+            <span class="tag">Model • Scenarios</span>
+          </summary>
+          <ul class="list">
+            <li><b>Objective:</b> build weekly forecast cadence with scenario planning.</li>
+            <li><b>Artifacts to add later:</b> model screenshot, assumptions table, weekly dashboard PDF/PNG.</li>
+            <li><b>Story to tell:</b> how forecast guided liquidity risk mitigation and planning.</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>
+            DSO Reduction & AR Aging Dashboard
+            <span class="tag">Collections • KPI</span>
+          </summary>
+          <ul class="list">
+            <li><b>Objective:</b> identify drivers of overdue AR and prioritize collections.</li>
+            <li><b>Artifacts to add later:</b> aging trend chart, cohort view, exception list logic.</li>
+            <li><b>Story to tell:</b> how reporting + process tightened cash conversion cycle.</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>
+            Month-End Close Acceleration (Automation)
+            <span class="tag">Process • OCR</span>
+          </summary>
+          <ul class="list">
+            <li><b>Objective:</b> reduce manual invoice processing and bottlenecks.</li>
+            <li><b>Artifacts to add later:</b> before/after cycle time chart, workflow diagram, controls checklist.</li>
+            <li><b>Story to tell:</b> how automation improved speed without sacrificing controls.</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>
+            Valuation Sensitivity Toolkit (DCF + scenarios)
+            <span class="tag">Valuation • Sensitivity</span>
+          </summary>
+          <ul class="list">
+            <li><b>Objective:</b> build a clean scenario/sensitivity view for valuation drivers.</li>
+            <li><b>Artifacts to add later:</b> sensitivity heatmap, assumptions, sample comps table.</li>
+            <li><b>Story to tell:</b> how the model supports leadership decisions (pricing, investment, M&A).</li>
+          </ul>
+        </details>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="contact" class="section">
+      <div class="section-title">
+        <h2>Contact</h2>
+        <div class="tiny">Fast ways to reach me</div>
       </div>
       <div class="card">
-        <h3 style="margin-top:0;">AR Aging Mix</h3>
-        <div id="arChart"></div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+          <a class="btn" href="mailto:laveenarochiramani@gmail.com">Email</a>
+          <a class="btn" href="https://www.linkedin.com/in/laveena-rochiramani-9275a91b3/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a class="btn" href="..resume/Laveena_Rochiramani_Resume.pdf" target="_blank" rel="noreferrer">Resume PDF</a>
+        </div>
+        <div class="tiny" style="margin-top:10px;">
+          Tip: if your resume is in a different repo, use the <span class="mono">raw.githubusercontent.com</span> URL for RESUME_PDF_URL.
+        </div>
       </div>
     </div>
 
-    <div class="card">
-      <h2 style="margin:0 0 8px;">Projects</h2>
-      <ul>
-        <li><a href="https://github.com/YOURUSER/cash-flow-forecasting-model">Cash Flow Forecasting Model</a> — AR/AP/inventory-driven forecast with scenarios</li>
-        <li><a href="https://github.com/YOURUSER/ar-aging-dashboard">AR Aging Dashboard</a> — DSO drivers and collections insights</li>
-        <li><a href="https://github.com/YOURUSER/vendor-terms-optimizer">Vendor Terms Optimizer</a> — cash preservation via payment-term modeling</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h2 style="margin:0 0 8px;">Contact</h2>
-      <div>Email: <a href="mailto:laveenarochiramani@gmail.com">laveenarochiramani@gmail.com</a></div>
-      <div>LinkedIn: <a href="#">Add your LinkedIn URL</a></div>
-      <div>Resume: <a href="../resume/Laveen%20Rochiramani%20(Resume).pdf">PDF</a></div>
+    <div class="footer">
+      © <span id="year"></span> Laveena Rochiramani • Built for GitHub Pages • Interactive visuals powered by Plotly
     </div>
   </div>
 
 <script>
-  // Sample data (replace with CSV fetch if you want)
-  const weeks = Array.from({length: 13}, (_,i)=>`W${i+1}`);
-  const base = [5.2,5.0,4.8,4.6,4.3,4.0,3.7,3.9,4.1,4.4,4.7,4.9,5.1];
-  const downside = base.map(v=>v-0.6);
-  const upside = base.map(v=>v+0.4);
+  // ===== Theme toggle =====
+  const body = document.body;
+  const themeBtn = document.getElementById("themeBtn");
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme) body.setAttribute("data-theme", savedTheme);
 
-  Plotly.newPlot("cashChart", [
-    {x: weeks, y: base, type:"scatter", mode:"lines+markers", name:"Base"},
-    {x: weeks, y: upside, type:"scatter", mode:"lines", name:"Upside"},
-    {x: weeks, y: downside, type:"scatter", mode:"lines", name:"Downside"}
-  ], {
-    paper_bgcolor:"rgba(0,0,0,0)", plot_bgcolor:"rgba(0,0,0,0)",
-    xaxis:{title:"Week"}, yaxis:{title:"Cash ($M)"},
-    margin:{l:50,r:10,t:10,b:40}
-  }, {displayModeBar:false});
+  function applyTheme(theme){
+    body.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    // re-render charts to match background
+    renderAll();
+  }
 
-  Plotly.newPlot("arChart", [{
-    labels:["0–30","31–60","61–90","90+"],
-    values:[52,23,15,10],
-    type:"pie",
-    hole:0.45
-  }], {
-    paper_bgcolor:"rgba(0,0,0,0)", plot_bgcolor:"rgba(0,0,0,0)",
-    margin:{l:10,r:10,t:10,b:10}
-  }, {displayModeBar:false});
+  themeBtn.addEventListener("click", () => {
+    const curr = body.getAttribute("data-theme") || "dark";
+    applyTheme(curr === "dark" ? "light" : "dark");
+  });
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // ===== Helpers =====
+  function cssVar(name){
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+  function plotLayoutBase(){
+    return {
+      paper_bgcolor: "rgba(0,0,0,0)",
+      plot_bgcolor: "rgba(0,0,0,0)",
+      font: { color: cssVar("--text"), family: cssVar("--sans") },
+      xaxis: { gridcolor: cssVar("--border"), zerolinecolor: cssVar("--border") },
+      yaxis: { gridcolor: cssVar("--border"), zerolinecolor: cssVar("--border") },
+      margin: { l: 52, r: 14, t: 10, b: 42 },
+      showlegend: true,
+      legend: { orientation: "h", y: 1.18, x: 0 }
+    };
+  }
+  function fmtM(x){
+    const sign = x < 0 ? "-" : "";
+    const v = Math.abs(x);
+    return `${sign}$${v.toFixed(1)}M`;
+  }
+
+  // ===== Model inputs =====
+  const dso = document.getElementById("dso");
+  const dpo = document.getElementById("dpo");
+  const dio = document.getElementById("dio");
+  const rev = document.getElementById("rev");
+
+  const dsoVal = document.getElementById("dsoVal");
+  const dpoVal = document.getElementById("dpoVal");
+  const dioVal = document.getElementById("dioVal");
+  const revVal = document.getElementById("revVal");
+
+  const arImpact = document.getElementById("arImpact");
+  const apImpact = document.getElementById("apImpact");
+  const invImpact = document.getElementById("invImpact");
+  const totalImpact = document.getElementById("totalImpact");
+
+  function calcImpacts(){
+    // Simple illustrative model:
+    // monthly revenue -> daily revenue = rev / 30 (in $M/day)
+    // AR cash release ~ DSO improvement * daily revenue
+    // AP cash retention ~ DPO extension * daily revenue * 0.55 (assume COGS/payables ratio proxy)
+    // Inventory cash release ~ DIO reduction * daily revenue * 0.35 (assume inventory intensity proxy)
+    const revenueM = parseFloat(rev.value);
+    const dailyRevM = revenueM / 30;
+
+    const arM = parseFloat(dso.value) * dailyRevM;
+    const apM = parseFloat(dpo.value) * dailyRevM * 0.55;
+    const invM = parseFloat(dio.value) * dailyRevM * 0.35;
+    const totalM = arM + apM + invM;
+
+    return { arM, apM, invM, totalM };
+  }
+
+  function updateUI(){
+    dsoVal.textContent = dso.value;
+    dpoVal.textContent = dpo.value;
+    dioVal.textContent = dio.value;
+    revVal.textContent = parseFloat(rev.value).toFixed(1);
+
+    const { arM, apM, invM, totalM } = calcImpacts();
+    arImpact.textContent = fmtM(arM);
+    apImpact.textContent = fmtM(apM);
+    invImpact.textContent = fmtM(invM);
+    totalImpact.textContent = fmtM(totalM);
+  }
+
+  // ===== Charts =====
+  function renderImpactChart(){
+    const weeks = Array.from({length:13}, (_,i)=>`W${i+1}`);
+
+    // Baseline cash (sample, $M)
+    const base = [5.2,5.0,4.8,4.6,4.3,4.0,3.7,3.9,4.1,4.4,4.7,4.9,5.1];
+
+    // Distribute total impact over 13 weeks with front-loaded benefit
+    const { totalM } = calcImpacts();
+    const weights = [0.18,0.14,0.12,0.10,0.08,0.07,0.06,0.06,0.06,0.05,0.04,0.02,0.02];
+    const impact = weights.map(w => w * totalM);
+    const improved = base.map((v,i)=>v + impact[i]);
+
+    Plotly.newPlot("impactChart", [
+      { x: weeks, y: base, type:"scatter", mode:"lines+markers", name:"Baseline" },
+      { x: weeks, y: improved, type:"scatter", mode:"lines+markers", name:"With working-capital levers" }
+    ], {
+      ...plotLayoutBase(),
+      yaxis: { ...plotLayoutBase().yaxis, title: "Cash ($M)" },
+      xaxis: { ...plotLayoutBase().xaxis, title: "Week" },
+      legend: { orientation: "h", y: 1.18, x: 0 }
+    }, {displayModeBar:false, responsive:true});
+  }
+
+  function renderCashChart(){
+    const weeks = Array.from({length:13}, (_,i)=>`W${i+1}`);
+    const base = [5.2,5.0,4.8,4.6,4.3,4.0,3.7,3.9,4.1,4.4,4.7,4.9,5.1];
+    const downside = base.map(v => v - 0.6);
+    const upside = base.map(v => v + 0.4);
+
+    Plotly.newPlot("cashChart", [
+      {x: weeks, y: base, type:"scatter", mode:"lines+markers", name:"Base"},
+      {x: weeks, y: upside, type:"scatter", mode:"lines", name:"Upside"},
+      {x: weeks, y: downside, type:"scatter", mode:"lines", name:"Downside"}
+    ], {
+      ...plotLayoutBase(),
+      yaxis: { ...plotLayoutBase().yaxis, title: "Cash ($M)" },
+      xaxis: { ...plotLayoutBase().xaxis, title: "Week" }
+    }, {displayModeBar:false, responsive:true});
+  }
+
+  function renderAgingChart(){
+    Plotly.newPlot("arChart", [{
+      labels:["0–30","31–60","61–90","90+"],
+      values:[52,23,15,10],
+      type:"pie",
+      hole:0.52,
+      textinfo:"label+percent"
+    }], {
+      paper_bgcolor:"rgba(0,0,0,0)",
+      plot_bgcolor:"rgba(0,0,0,0)",
+      font: { color: cssVar("--text"), family: cssVar("--sans") },
+      margin:{l:10,r:10,t:10,b:10},
+      showlegend:false
+    }, {displayModeBar:false, responsive:true});
+  }
+
+  function renderAll(){
+    updateUI();
+    renderImpactChart();
+    renderCashChart();
+    renderAgingChart();
+  }
+
+  [dso,dpo,dio,rev].forEach(el => el.addEventListener("input", renderAll));
+
+  // initial render
+  renderAll();
 </script>
 </body>
 </html>
