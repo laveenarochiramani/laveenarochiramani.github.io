@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Laveena Rochiramani | Financial Analyst Portfolio</title>
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <style>
+    body{font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial; margin:0; background:#0b0f14; color:#e9eef5;}
+    .wrap{max-width:1050px; margin:0 auto; padding:40px 20px;}
+    .card{background:#121a24; border:1px solid #1f2b3a; border-radius:16px; padding:18px; margin:16px 0;}
+    a{color:#9bd3ff; text-decoration:none}
+    .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}}
+    .kpi{display:flex; gap:16px; flex-wrap:wrap;}
+    .pill{background:#0f1722; border:1px solid #22344a; padding:10px 12px; border-radius:999px;}
+    .muted{color:#b7c3d6}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 style="margin:0 0 6px;">Laveena Rochiramani</h1>
+    <div class="muted">Financial Analyst • Cash Flow Forecasting • Working Capital • BI Dashboards • Automation</div>
+
+    <div class="kpi" style="margin-top:16px;">
+      <div class="pill">Liquidity gaps identified: <b>$1.2M</b></div>
+      <div class="pill">DSO reduced: <b>18%</b></div>
+      <div class="pill">Cash inflow impact: <b>$500K/month</b></div>
+      <div class="pill">Month-end close faster: <b>2 days</b></div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 8px;">Interactive Finance Samples (sanitized)</h2>
+      <div class="muted">These charts use sample data to demonstrate modeling and dashboarding approach.</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3 style="margin-top:0;">13-Week Cash Forecast</h3>
+        <div id="cashChart"></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0;">AR Aging Mix</h3>
+        <div id="arChart"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 8px;">Projects</h2>
+      <ul>
+        <li><a href="https://github.com/YOURUSER/cash-flow-forecasting-model">Cash Flow Forecasting Model</a> — AR/AP/inventory-driven forecast with scenarios</li>
+        <li><a href="https://github.com/YOURUSER/ar-aging-dashboard">AR Aging Dashboard</a> — DSO drivers and collections insights</li>
+        <li><a href="https://github.com/YOURUSER/vendor-terms-optimizer">Vendor Terms Optimizer</a> — cash preservation via payment-term modeling</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0 0 8px;">Contact</h2>
+      <div>Email: <a href="mailto:laveenarochiramani@gmail.com">laveenarochiramani@gmail.com</a></div>
+      <div>LinkedIn: <a href="#">Add your LinkedIn URL</a></div>
+      <div>Resume: <a href="../resume/Laveen%20Rochiramani%20(Resume).pdf">PDF</a></div>
+    </div>
+  </div>
+
+<script>
+  // Sample data (replace with CSV fetch if you want)
+  const weeks = Array.from({length: 13}, (_,i)=>`W${i+1}`);
+  const base = [5.2,5.0,4.8,4.6,4.3,4.0,3.7,3.9,4.1,4.4,4.7,4.9,5.1];
+  const downside = base.map(v=>v-0.6);
+  const upside = base.map(v=>v+0.4);
+
+  Plotly.newPlot("cashChart", [
+    {x: weeks, y: base, type:"scatter", mode:"lines+markers", name:"Base"},
+    {x: weeks, y: upside, type:"scatter", mode:"lines", name:"Upside"},
+    {x: weeks, y: downside, type:"scatter", mode:"lines", name:"Downside"}
+  ], {
+    paper_bgcolor:"rgba(0,0,0,0)", plot_bgcolor:"rgba(0,0,0,0)",
+    xaxis:{title:"Week"}, yaxis:{title:"Cash ($M)"},
+    margin:{l:50,r:10,t:10,b:40}
+  }, {displayModeBar:false});
+
+  Plotly.newPlot("arChart", [{
+    labels:["0–30","31–60","61–90","90+"],
+    values:[52,23,15,10],
+    type:"pie",
+    hole:0.45
+  }], {
+    paper_bgcolor:"rgba(0,0,0,0)", plot_bgcolor:"rgba(0,0,0,0)",
+    margin:{l:10,r:10,t:10,b:10}
+  }, {displayModeBar:false});
+</script>
+</body>
+</html>
